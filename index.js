@@ -964,8 +964,8 @@ OpenIDConnect.prototype.token = function() {
                                     exp: d+3600,
                                     iat: d
                             };
-                            var jwk = pem2jwk(new Buffer(prev.client.key, 'base64').toString('ascii'))
                             console.log('encoding with header ... ')
+                            var jwk = pem2jwk(new Buffer(prev.client.key, 'base64').toString('ascii'))
                             req.model.access.create({
                                     token: access,
                                     type: 'Bearer',
