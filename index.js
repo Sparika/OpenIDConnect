@@ -666,7 +666,7 @@ OpenIDConnect.prototype.auth = function() {
                                                                 new Buffer(req.session.client_secret, 'base64').toString('binary') :
                                                                 req.session.client_secret,
                                                            req.session.required_sig,
-                                                           {header:{jwk:jwk}});
+                                                           {header:{jwk:jwk, jku:'https://'+req.headers.host+'/proxy/keyset'}});
                                 console.log('done')
                             }
                             deferred.resolve({params: params, type: params.response_type != 'code'?'f':'q', resp: resp});
@@ -978,7 +978,7 @@ OpenIDConnect.prototype.token = function() {
                                                         prev.client.required_sig == "RS256" ? new Buffer(prev.client.secret, 'base64').toString('binary') :
                                                                                                        prev.client.secret,
                                                         prev.client.required_sig,
-                                                        {header:{jwk:jwk}}),
+                                                        {header:{jwk:jwk, jku:'https://'+req.headers.host+'/proxy/keyset'}}),
                                     scope: prev.scope,
                                     auth: prev.auth?prev.auth.id:null
                             },
