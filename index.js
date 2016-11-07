@@ -207,7 +207,7 @@ function parse_authorization(authorization) {
     if(parts.length != 2 || parts[0] != 'Basic')
         return null;
 
-    var creds = new Buffer(parts[1], 'base64').toString(),
+    var creds = Buffer.from(parts[1], 'base64').toString(),
     i = creds.indexOf(':');
 
     if(i == -1)
@@ -489,6 +489,7 @@ OpenIDConnect.prototype.auth = function() {
                         } else {
                             req.session.client_id = model.id;
                             req.session.client_secret = model.secret;
+                            req.session.client_key = params.client_id;
                             //Find required signature by client
                             req.session.required_sig = model.required_sig
                             deferred.resolve(params);
@@ -657,13 +658,14 @@ OpenIDConnect.prototype.auth = function() {
                                 console.log('jwk?')
                                 resp.id_token.at_hash = base64url(hbuf.toString('ascii', 0, hbuf.length/2));
                                 console.log(req.session)
-                                var key = new Buffer(req.session.client_key, 'base64').toString("ascii")
+                                var key = Buffer.from(req.session.client_key, 'base64').toString("ascii")
                                 console.log(key)
                                 var jwk = pem2jwk(key)
                                 console.log(jwk)
+                                console.log('With JKU header')
                                 resp.id_token = jwt.encode(resp.id_token,
                                                            req.session.required_sig == "RS256" ?
-                                                                new Buffer(req.session.client_secret, 'base64').toString('binary') :
+                                                                Buffer.from(req.session.client_secret, 'base64').toString('binary') :
                                                                 req.session.client_secret,
                                                            req.session.required_sig,
                                                            {header:{jwk:jwk, jku:'https://'+req.headers.host+'/proxy/keyset'}});
@@ -967,7 +969,8 @@ OpenIDConnect.prototype.token = function() {
                                     iat: d
                             };
                             console.log('encoding with header ... ')
-                            var jwk = pem2jwk(new Buffer(prev.client.key, 'base64').toString('ascii'))
+                            var jwk = pem2jwk(Buffer.from(prev.client.key, 'base64').toString('ascii'))
+                            console.log('With JKU header')
                             req.model.access.create({
                                     token: access,
                                     type: 'Bearer',
@@ -975,7 +978,7 @@ OpenIDConnect.prototype.token = function() {
                                     user: prev.user||null,
                                     client: prev.client.id,
                                     idToken: jwt.encode(id_token,
-                                                        prev.client.required_sig == "RS256" ? new Buffer(prev.client.secret, 'base64').toString('binary') :
+                                                        prev.client.required_sig == "RS256" ? Buffer.from(prev.client.secret, 'base64').toString('binary') :
                                                                                                        prev.client.secret,
                                                         prev.client.required_sig,
                                                         {header:{jwk:jwk, jku:'https://'+req.headers.host+'/proxy/keyset'}}),
