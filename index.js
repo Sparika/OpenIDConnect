@@ -330,6 +330,7 @@ OpenIDConnect.prototype.errorHandle = function(res, uri, error, desc) {
 OpenIDConnect.prototype.endpointParams = function (spec, req, res, next) {
     try {
         req.parsedParams = this.parseParams(req, res, spec);
+        console.log("HERE !!!!!"+req.parsedParams)
         next();
     } catch(err) {
         this.errorHandle(res, err.uri, err.error, err.msg);
@@ -396,8 +397,14 @@ OpenIDConnect.prototype.parseParams = function(req, res, spec) {
 
 OpenIDConnect.prototype.login = function(validateUser) {
     var self = this;
-
+    console.log('Redirect URI required')
+    var spec = {
+            redirect_uri: true,
+    }
     return [self.use({policies: {loggedIn: false}, models: 'user'}),
+            function(req, res, next) {
+                    self.endpointParams(spec, req, res, next);
+            },
             function(req, res, next) {
                 validateUser(req, /*next:*/function(error,user) {
                     if(!error && !user) {
