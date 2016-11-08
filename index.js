@@ -330,7 +330,8 @@ OpenIDConnect.prototype.errorHandle = function(res, uri, error, desc) {
 OpenIDConnect.prototype.endpointParams = function (spec, req, res, next) {
     try {
         req.parsedParams = this.parseParams(req, res, spec);
-        console.log("HERE !!!!!"+req.parsedParams)
+        console.log("HERE !!!!!")
+        console.log(req.parsedParams)
         next();
     } catch(err) {
         this.errorHandle(res, err.uri, err.error, err.msg);
