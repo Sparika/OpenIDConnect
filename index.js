@@ -662,21 +662,15 @@ OpenIDConnect.prototype.auth = function() {
                             }
                             if(resp.access_token && resp.id_token) {
                                 var hbuf = crypto.createHmac('sha256', req.session.client_secret).update(resp.access_token).digest();
-                                console.log('jwk?')
                                 resp.id_token.at_hash = base64url(hbuf.toString('ascii', 0, hbuf.length/2));
-                                console.log(req.session)
                                 var key = Buffer.from(req.session.client_key, 'base64').toString("ascii")
-                                console.log(key)
                                 var jwk = pem2jwk(key)
-                                console.log(jwk)
-                                console.log('With JKU header')
                                 resp.id_token = jwt.encode(resp.id_token,
                                                            req.session.required_sig == "RS256" ?
                                                                 Buffer.from(req.session.client_secret, 'base64').toString('binary') :
                                                                 req.session.client_secret,
                                                            req.session.required_sig,
                                                            {header:{jwk:jwk, jku:'https://'+req.headers.host+'/proxy/keyset'}});
-                                console.log('done')
                             }
                             deferred.resolve({params: params, type: params.response_type != 'code'?'f':'q', resp: resp});
                         });
@@ -698,10 +692,11 @@ OpenIDConnect.prototype.auth = function() {
                             uri.query = resp;
                         }
                         //This is an actual request for an ID Assertion
-                        if(params.rtcsdp){
-                         console.log('SEND')
-                         res.send(uri.hash)
-                        }
+                        //TODO Handle this case with adequate parameter rather than rtcsdp
+                        //if(params.rtcsdp){
+                        // console.log('SEND')
+                        // res.send(uri.hash)
+                        //}
                         //Else this is a standard authorization request
                         else {
                             console.log('RDR'+url.format(uri))
@@ -975,9 +970,7 @@ OpenIDConnect.prototype.token = function() {
                                     exp: d+3600,
                                     iat: d
                             };
-                            console.log('encoding with header ... ')
                             var jwk = pem2jwk(Buffer.from(prev.client.key, 'base64').toString('ascii'))
-                            console.log('With JKU header')
                             req.model.access.create({
                                     token: access,
                                     type: 'Bearer',
