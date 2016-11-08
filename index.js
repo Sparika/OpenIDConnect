@@ -330,8 +330,6 @@ OpenIDConnect.prototype.errorHandle = function(res, uri, error, desc) {
 OpenIDConnect.prototype.endpointParams = function (spec, req, res, next) {
     try {
         req.parsedParams = this.parseParams(req, res, spec);
-        console.log("HERE !!!!!")
-        console.log(req.parsedParams)
         next();
     } catch(err) {
         this.errorHandle(res, err.uri, err.error, err.msg);
@@ -339,6 +337,8 @@ OpenIDConnect.prototype.endpointParams = function (spec, req, res, next) {
 }
 
 OpenIDConnect.prototype.parseParams = function(req, res, spec) {
+    console.log('Before parsing params')
+    console.log(req.param)
     var params = {};
     var r = req.param('redirect_uri');
     for(var i in spec) {
@@ -380,6 +380,8 @@ OpenIDConnect.prototype.parseParams = function(req, res, spec) {
             }
         }
     }
+    console.log('After parsing params')
+    console.log(req.param)
     return params;
 };
 
@@ -398,7 +400,7 @@ OpenIDConnect.prototype.parseParams = function(req, res, spec) {
 
 OpenIDConnect.prototype.login = function(validateUser) {
     var self = this;
-    console.log('Redirect URI required')
+    console.log('Login')
     var spec = {
             redirect_uri: true,
     }
