@@ -338,7 +338,9 @@ OpenIDConnect.prototype.endpointParams = function (spec, req, res, next) {
 
 OpenIDConnect.prototype.parseParams = function(req, res, spec) {
     console.log('Before parsing params')
-    console.log(req.param)
+    console.log(req.param('redirect_uri'))
+    console.log(req.query)
+    console.log(req.query('redirect_uri'))
     var params = {};
     var r = req.param('redirect_uri');
     for(var i in spec) {
@@ -381,7 +383,8 @@ OpenIDConnect.prototype.parseParams = function(req, res, spec) {
         }
     }
     console.log('After parsing params')
-    console.log(req.param)
+    console.log(req.param('redirect_uri'))
+    console.log(req.param('redirect_uri'))
     return params;
 };
 
