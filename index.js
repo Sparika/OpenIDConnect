@@ -399,7 +399,7 @@ OpenIDConnect.prototype.login = function(validateUser) {
     var self = this;
     console.log('Login')
     var spec = {
-            redirect_uri: true,
+            redirect_uri: false,
     }
     return [self.use({policies: {loggedIn: false}, models: 'user'}),
             function(req, res, next) {
@@ -691,15 +691,13 @@ OpenIDConnect.prototype.auth = function() {
                         } else {
                             uri.query = resp;
                         }
-                        //This is an actual request for an ID Assertion
-                        //TODO Handle this case with adequate parameter rather than rtcsdp
-                        //if(params.rtcsdp){
-                        // console.log('SEND')
-                        // res.send(uri.hash)
-                        //}
+
+                        //Response Mode is set to BODY
+                        if(params.response_mode == 'body'){
+                          res.send(uri.hash)
+                        }
                         //Else this is a standard authorization request
                         else {
-                            console.log('RDR'+url.format(uri))
                             res.redirect(url.format(uri));
                         }
                     }
