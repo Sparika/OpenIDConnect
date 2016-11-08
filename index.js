@@ -337,12 +337,7 @@ OpenIDConnect.prototype.endpointParams = function (spec, req, res, next) {
 }
 
 OpenIDConnect.prototype.parseParams = function(req, res, spec) {
-    console.log('Before parsing params')
-    console.log(req.param('redirect_uri'))
-    console.log('Query')
-    console.log(req.query)
-    console.log('Body')
-    console.log(req.body)
+    //TODO req.param is deprecated do we want to accept body, params and query?
     var params = {};
     var r = req.param('redirect_uri');
     for(var i in spec) {
@@ -384,8 +379,6 @@ OpenIDConnect.prototype.parseParams = function(req, res, spec) {
             }
         }
     }
-    console.log('After parsing params')
-    console.log(req.param('redirect_uri'))
     return params;
 };
 
