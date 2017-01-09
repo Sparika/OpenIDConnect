@@ -612,6 +612,9 @@ OpenIDConnect.prototype.auth = function() {
                                         nonce: params.nonce,
                                 }
                                 if(params.rtcsdp) id_token.rtcsdp = params.rtcsdp
+                                // WARNING
+                                //We just put what's asked
+                                if(params.acr_values) id_token.dummy_acr = params.acr_values
                                 def.resolve({id_token: id_token});
                                 //def.resolve({id_token: jwt.encode(id_token, req.session.client_secret)});
                                 break;
