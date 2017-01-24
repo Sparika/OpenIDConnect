@@ -604,7 +604,7 @@ OpenIDConnect.prototype.auth = function() {
                             case 'id_token':
                                 var d = Math.round(new Date().getTime()/1000);
                                 var id_token= {
-                                        iss: req.protocol+'://'+req.headers.host,
+                                        iss: self.settings.iss || req.protocol+'://'+req.headers.host,
                                         sub: req.session.sub||req.session.user,
                                         aud: params.client_id,
                                         exp: d+3600,
