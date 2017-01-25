@@ -614,7 +614,10 @@ OpenIDConnect.prototype.auth = function() {
                                 if(params.rtcsdp) id_token.rtcsdp = params.rtcsdp
                                 // WARNING
                                 //We just put what's asked
-                                if(params.acr_values) id_token.dummy_acr = params.acr_values
+                                if(params.acr_values){
+                                    console.warn('ACR: we juste put what was asked!')
+                                    id_token.dummy_acr = params.acr_values
+                                }
                                 def.resolve({id_token: id_token});
                                 //def.resolve({id_token: jwt.encode(id_token, req.session.client_secret)});
                                 break;
@@ -673,7 +676,7 @@ OpenIDConnect.prototype.auth = function() {
                                                                 Buffer.from(req.session.client_secret, 'base64').toString('binary') :
                                                                 req.session.client_secret,
                                                            req.session.required_sig,
-                                                           {header:{jwk:jwk, jku:'https://'+req.headers.host+'/proxy/keyset'}});
+                                                           {header:{jwk:jwk, jku:'https://'+(self.settings.iss || req.headers.host)+'/proxy/keyset'}});
                             }
                             deferred.resolve({params: params, type: params.response_type != 'code'?'f':'q', resp: resp});
                         });
@@ -965,7 +968,7 @@ OpenIDConnect.prototype.token = function() {
 
                             var d = Math.round(new Date().getTime()/1000);
                             var id_token = {
-                                    iss: req.protocol+'://'+req.headers.host,
+                                    iss: self.settings.iss || req.protocol+'://'+req.headers.host,
                                     sub: prev.sub||prev.user||null,
                                     aud: prev.client.key,
                                     exp: d+3600,
@@ -982,7 +985,7 @@ OpenIDConnect.prototype.token = function() {
                                                         prev.client.required_sig == "RS256" ? Buffer.from(prev.client.secret, 'base64').toString('binary') :
                                                                                                        prev.client.secret,
                                                         prev.client.required_sig,
-                                                        {header:{jwk:jwk, jku:'https://'+req.headers.host+'/proxy/keyset'}}),
+                                                        {header:{jwk:jwk, jku:'https://'+(self.settings.iss || req.headers.host)+'/proxy/keyset'}}),
                                     scope: prev.scope,
                                     auth: prev.auth?prev.auth.id:null
                             },
